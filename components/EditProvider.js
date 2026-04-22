@@ -64,6 +64,50 @@ export function EditProvider({ initialContent, isAdmin, children }) {
     }
   }, [content]);
 
+  // Точечное сохранение куска content — используется для auto-save фото/иконок.
+  const saveNow = useCallback(async (nextContent) => {
+    setSaving(true);
+    setStatus('');
+    try {
+      const res = await fetch('/api/content', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(nextContent),
+      });
+      if (!res.ok) throw new Error('Ошибка сохранения');
+      initialRef.current = nextContent;
+      setDirty(false);
+      setStatus('Сохранено');
+      setTimeout(() => setStatus(''), 1500);
+    } catch (e) {
+      setStatus(e.message || 'Ошибка');
+    } finally {
+      setSaving(false);
+    }
+  }, []);
+
+  // Обновить путь и сразу сохранить (для загрузок файлов).
+  const updateAndSave = useCallback(
+    (path, value) => {
+      setContent((prev) => {
+        const next = structuredClone(prev);
+        const keys = path.split('.');
+        let node = next;
+        for (let i = 0; i < keys.length - 1; i++) {
+          const k = keys[i];
+          if (node[k] === undefined || node[k] === null) {
+            node[k] = isNaN(Number(keys[i + 1])) ? {} : [];
+          }
+          node = node[k];
+        }
+        node[keys[keys.length - 1]] = value;
+        saveNow(next);
+        return next;
+      });
+    },
+    [saveNow]
+  );
+
   const discard = useCallback(() => {
     setContent(initialRef.current);
     setDirty(false);
@@ -96,11 +140,12 @@ export function EditProvider({ initialContent, isAdmin, children }) {
       replaceSection,
       save,
       discard,
+      updateAndSave,
       dirty,
       saving,
       status,
     }),
-    [content, isAdmin, editMode, update, replaceSection, save, discard, dirty, saving, status]
+    [content, isAdmin, editMode, update, replaceSection, save, discard, updateAndSave, dirty, saving, status]
   );
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;

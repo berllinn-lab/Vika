@@ -4,10 +4,11 @@ import { useEffect, useRef, useState } from 'react';
 import { useEdit } from './EditProvider';
 
 export default function EditablePhoto({ path, value, className = '', alt = '' }) {
-  const { isAdmin, editMode, update } = useEdit();
+  const { isAdmin, editMode, updateAndSave } = useEdit();
   const inputRef = useRef(null);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState('');
+  const [ok, setOk] = useState(false);
 
   const editable = isAdmin && editMode;
 
@@ -16,13 +17,16 @@ export default function EditablePhoto({ path, value, className = '', alt = '' })
     if (!file) return;
     setUploading(true);
     setError('');
+    setOk(false);
     try {
       const fd = new FormData();
       fd.append('file', file);
       const res = await fetch('/api/upload', { method: 'POST', body: fd });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Ошибка загрузки');
-      update(path, data.url);
+      updateAndSave(path, data.url);
+      setOk(true);
+      setTimeout(() => setOk(false), 2000);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -31,10 +35,18 @@ export default function EditablePhoto({ path, value, className = '', alt = '' })
     }
   };
 
+  // Пробиваем кеш браузера после замены (одного и того же пути нет, но на всякий).
+  const imgSrc = value || '';
+
   return (
     <div className={`relative ${className}`}>
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={value} alt={alt} className="w-full h-full object-cover grayscale-[20%] sepia-[10%]" />
+      <img
+        key={imgSrc}
+        src={imgSrc}
+        alt={alt}
+        className="w-full h-full object-cover grayscale-[20%] sepia-[10%]"
+      />
       {editable ? (
         <>
           <button
@@ -59,6 +71,11 @@ export default function EditablePhoto({ path, value, className = '', alt = '' })
           {error ? (
             <div className="absolute bottom-2 left-2 right-2 bg-red-600 text-white text-xs p-2 rounded shadow-lg z-10">
               {error}
+            </div>
+          ) : null}
+          {ok ? (
+            <div className="absolute bottom-2 left-2 right-2 bg-green-600 text-white text-xs p-2 rounded shadow-lg z-10 text-center">
+              Фото обновлено и сохранено
             </div>
           ) : null}
         </>
