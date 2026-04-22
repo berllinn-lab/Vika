@@ -57,6 +57,8 @@ jobs:
             chmod 600 .env
 
             mkdir -p data public/uploads
+            # UID/GID пользователя nextjs внутри контейнера — 1001
+            chown -R 1001:1001 data public/uploads
 
             if [ -f data/site.db ]; then
               mkdir -p backups
