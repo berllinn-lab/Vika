@@ -66,4 +66,10 @@ jobs:
             docker compose up -d --build
             docker image prune -f
 
+            # nginx reverse-proxy (провайдер снаружи пускает только 80/443)
+            if [ -f deploy/nginx/vika.conf ] && [ -d /etc/nginx/conf.d ]; then
+              install -m 0644 deploy/nginx/vika.conf /etc/nginx/conf.d/vika.conf
+              nginx -t && systemctl reload nginx
+            fi
+
             git remote set-url origin "https://github.com/${GH_REPO}.git"
