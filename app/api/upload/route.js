@@ -7,8 +7,16 @@ import crypto from 'crypto';
 export const runtime = 'nodejs';
 
 const UPLOAD_DIR = path.join(process.cwd(), 'public', 'uploads');
-const ALLOWED = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/gif']);
-const MAX_BYTES = 8 * 1024 * 1024; // 8 MB
+const ALLOWED = new Set([
+  'image/jpeg',
+  'image/png',
+  'image/webp',
+  'image/gif',
+  'image/heic',
+  'image/heif',
+  'image/avif',
+]);
+const MAX_BYTES = 20 * 1024 * 1024; // 20 MB
 
 export async function POST(req) {
   if (!(await isAdmin())) {
@@ -19,8 +27,14 @@ export async function POST(req) {
   if (!file || typeof file === 'string') {
     return NextResponse.json({ error: 'Файл не передан' }, { status: 400 });
   }
-  if (!ALLOWED.has(file.type)) {
-    return NextResponse.json({ error: 'Разрешены только JPG, PNG, WEBP, GIF' }, { status: 400 });
+  // Некоторые браузеры отдают HEIC с пустым MIME — пропускаем по расширению.
+  const nameLower = (file.name || '').toLowerCase();
+  const extOk = /\.(jpe?g|png|webp|gif|heic|heif|avif)$/i.test(nameLower);
+  if (!ALLOWED.has(file.type) && !extOk) {
+    return NextResponse.json(
+      { error: `Неподдерживаемый формат: ${file.type || 'unknown'}` },
+      { status: 400 }
+    );
   }
   const buf = Buffer.from(await file.arrayBuffer());
   if (buf.length > MAX_BYTES) {

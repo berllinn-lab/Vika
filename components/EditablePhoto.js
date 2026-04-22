@@ -38,10 +38,11 @@ export default function EditablePhoto({ path, value, className = '', alt = '' })
       {editable ? (
         <>
           <button
+            type="button"
             onClick={() => inputRef.current?.click()}
             className="absolute inset-0 flex items-center justify-center bg-black/40 hover:bg-black/55 text-white transition-colors"
           >
-            <span className="bg-white/90 text-on-surface px-5 py-3 rounded-full text-sm flex items-center gap-2">
+            <span className="bg-white/90 text-on-surface px-5 py-3 rounded-full text-sm flex items-center gap-2 pointer-events-none">
               <span className="material-symbols-outlined" style={{ fontSize: 20 }}>
                 photo_camera
               </span>
@@ -51,12 +52,12 @@ export default function EditablePhoto({ path, value, className = '', alt = '' })
           <input
             ref={inputRef}
             type="file"
-            accept="image/*"
+            accept="image/*,.heic,.heif"
             className="hidden"
             onChange={onChange}
           />
           {error ? (
-            <div className="absolute bottom-2 left-2 right-2 bg-error text-on-error text-xs p-2 rounded">
+            <div className="absolute bottom-2 left-2 right-2 bg-red-600 text-white text-xs p-2 rounded shadow-lg z-10">
               {error}
             </div>
           ) : null}
