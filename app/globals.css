@@ -1,0 +1,58 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: 'DM Sans', sans-serif;
+}
+
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 200, 'GRAD' 0, 'opsz' 24;
+}
+
+.text-label {
+  font-size: 11px;
+  letter-spacing: 1.5pt;
+  text-transform: uppercase;
+  font-family: 'Inter', sans-serif;
+  font-weight: 300;
+}
+
+.font-serif-italic {
+  font-family: 'Newsreader', serif;
+  font-style: italic;
+}
+
+/* Inline-редактор */
+.qd-editable {
+  outline: none;
+  transition: box-shadow 120ms ease, background-color 120ms ease;
+  border-radius: 4px;
+}
+
+.qd-edit-mode .qd-editable {
+  box-shadow: 0 0 0 1px rgba(92, 87, 148, 0.25);
+  background-color: rgba(228, 223, 255, 0.15);
+  cursor: text;
+}
+
+.qd-edit-mode .qd-editable:hover {
+  box-shadow: 0 0 0 1px rgba(92, 87, 148, 0.6);
+}
+
+.qd-edit-mode .qd-editable:focus {
+  box-shadow: 0 0 0 2px #5c5794;
+  background-color: #fff;
+}
+
+.qd-edit-mode [data-qd-list-item] {
+  position: relative;
+}
+
+.qd-item-controls {
+  display: none;
+}
+
+.qd-edit-mode .qd-item-controls {
+  display: flex;
+}

@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+
+<html class="scroll-smooth" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>The Quiet Dialogue | Psychological Practice</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&amp;family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&amp;family=Inter:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-high": "#eae8e3",
+                        "tertiary": "#006c52",
+                        "primary-fixed": "#e4dfff",
+                        "on-surface-variant": "#47464f",
+                        "on-primary": "#ffffff",
+                        "surface-container-highest": "#e4e2dd",
+                        "secondary": "#5f5e5c",
+                        "on-secondary": "#ffffff",
+                        "outline-variant": "#c8c5d1",
+                        "on-background": "#1b1c19",
+                        "surface-dim": "#dcdad5",
+                        "secondary-fixed-dim": "#c8c6c3",
+                        "on-error-container": "#93000a",
+                        "surface-container-low": "#f5f3ee",
+                        "error": "#ba1a1a",
+                        "inverse-surface": "#30312e",
+                        "tertiary-fixed-dim": "#6edab4",
+                        "on-primary-container": "#413c77",
+                        "inverse-on-surface": "#f2f1ec",
+                        "surface-container": "#f0eee9",
+                        "surface-tint": "#5c5794",
+                        "on-error": "#ffffff",
+                        "surface": "#fbf9f4",
+                        "on-secondary-container": "#636260",
+                        "on-secondary-fixed-variant": "#474744",
+                        "primary": "#5c5794",
+                        "surface-bright": "#fbf9f4",
+                        "error-container": "#ffdad6",
+                        "background": "#fbf9f4",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary-fixed-variant": "#443f7a",
+                        "inverse-primary": "#c6c0ff",
+                        "on-surface": "#1b1c19",
+                        "on-tertiary-container": "#004d3a",
+                        "on-primary-fixed": "#18114c",
+                        "on-secondary-fixed": "#1b1c1a",
+                        "secondary-container": "#e2dfdc",
+                        "on-tertiary-fixed": "#002117",
+                        "on-tertiary-fixed-variant": "#00513d",
+                        "tertiary-fixed": "#8af7cf",
+                        "tertiary-container": "#56c39e",
+                        "primary-fixed-dim": "#c6c0ff",
+                        "secondary-fixed": "#e5e2df",
+                        "outline": "#787680",
+                        "primary-container": "#afa9ec",
+                        "on-tertiary": "#ffffff",
+                        "surface-variant": "#e4e2dd"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Newsreader", "serif"],
+                        "body": ["DM Sans", "sans-serif"],
+                        "label": ["Inter", "sans-serif"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'DM Sans', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 200, 'GRAD' 0, 'opsz' 24;
+        }
+        .text-label { font-size: 11px; letter-spacing: 1.5pt; text-transform: uppercase; font-family: 'Inter', sans-serif; font-weight: 300; }
+        .font-serif-italic { font-family: 'Newsreader', serif; font-style: italic; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface selection:bg-primary-container/30">
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full z-50 bg-[#fbf9f4]/80 dark:bg-stone-950/80 backdrop-blur-md">
+<div class="flex justify-between items-center px-12 py-6 w-full max-w-screen-2xl mx-auto">
+<div class="text-xl font-serif italic text-stone-800 dark:text-stone-100">The Quiet Dialogue</div>
+<div class="hidden md:flex gap-10 items-center">
+<a class="text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-200 transition-colors text-label" href="#about">About</a>
+<a class="text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-200 transition-colors text-label" href="#expertise">Expertise</a>
+<a class="text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-200 transition-colors text-label" href="#process">Process</a>
+<a class="text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-200 transition-colors text-label" href="#faq">FAQ</a>
+<a class="bg-primary-container/20 border border-primary-container text-on-primary-container px-6 py-2.5 rounded-full text-label hover:bg-primary-container hover:text-white transition-all duration-300" href="#contact">Book a session</a>
+</div>
+</div>
+</nav>
+<main class="pt-24 overflow-x-hidden">
+<!-- Hero Section -->
+<section class="min-h-screen flex items-center px-12 max-w-screen-2xl mx-auto">
+<div class="grid grid-cols-1 md:grid-cols-12 gap-12 items-center w-full">
+<div class="md:col-span-7 flex flex-col items-start">
+<p class="text-label text-primary mb-8">Clinical Psychologist • Private Practice</p>
+<h1 class="text-6xl md:text-8xl font-serif italic leading-tight text-on-surface mb-12">
+                        A place where you <br/> can <span class="text-primary-container">simply be</span>.
+                    </h1>
+<div class="flex gap-6 items-center">
+<a class="bg-primary-container text-on-primary-container px-10 py-4 rounded-full text-label font-medium hover:bg-primary transition-all duration-500 shadow-sm" href="#contact">Book a session</a>
+<a class="text-label border-b border-tertiary-container pb-1 hover:border-primary transition-all" href="#process">How it works</a>
+</div>
+</div>
+<div class="md:col-span-5 relative">
+<div class="aspect-[4/5] bg-surface-container-low rounded-xl overflow-hidden shadow-2xl shadow-on-surface/5">
+<img class="w-full h-full object-cover grayscale-[20%] sepia-[10%]" data-alt="A soft, natural-light portrait of a professional woman with a calm expression, neutral linen clothing, soft focus indoor background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAbb3EKZOXWlf33FSNm1mvwIe3rvU8kyEAlRUNfmOjJxy52XUuV4ox6aLy4pX83ncgwisuDby0yoKpelOYsJgfHFutG3Gxc6xMAWH4jXamI3nVzRVG6lHFcHbvUd4HUNgd9GWQ0RqFAGkaAjFnUVrlt26BZp7c_owEHPoFY5AWEm9GwNR4ku3x-HS8TnSXSInr5ZnEBesuxAyF8kHyQXc3TirvXjkBupVaHNZBPoAuIlNjeDHdrMSCHUZ0a0V6lZWr5cim9HXIS7oQ"/>
+</div>
+<div class="absolute -bottom-6 -left-6 w-32 h-32 bg-tertiary-container/10 -z-10 rounded-full blur-2xl"></div>
+</div>
+</div>
+</section>
+<!-- About Section -->
+<section class="bg-surface-container-low py-32 px-12" id="about">
+<div class="max-w-screen-2xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-24">
+<div class="md:col-span-7">
+<p class="text-label text-primary mb-6">About the practice</p>
+<h2 class="text-4xl font-headline italic mb-8">Guided by empathy, grounded in science.</h2>
+<div class="space-y-6 text-lg text-on-surface-variant font-light leading-relaxed">
+<p>In our sessions, we move beyond just managing symptoms. We create a dialogue—a quiet, intentional space where we can explore the layers of your experience with curiosity rather than judgment.</p>
+<p>My approach is rooted in Scandinavian principles of professional warmth and functional minimalism. I believe therapy should feel like a sanctuary—a room where you can set down the weight of expectations and begin to speak your truth into existence.</p>
+</div>
+</div>
+<div class="md:col-span-5 flex flex-col justify-center">
+<div class="border-l-[0.5px] border-tertiary-container pl-12 space-y-12 py-4">
+<div>
+<p class="text-label mb-2">Education</p>
+<p class="font-headline italic text-xl">Ph.D. in Clinical Psychology</p>
+<p class="text-sm font-light text-on-surface-variant">University of Copenhagen</p>
+</div>
+<div>
+<p class="text-label mb-2">Philosophy</p>
+<p class="font-headline italic text-xl">Humanistic-Existential Approach</p>
+<p class="text-sm font-light text-on-surface-variant">CBT &amp; Mindfulness Integration</p>
+</div>
+<div>
+<p class="text-label mb-2">Accreditation</p>
+<p class="font-headline italic text-xl">Licensed Psychotherapist</p>
+<p class="text-sm font-light text-on-surface-variant">Member of the BPS &amp; APA</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Areas of Work -->
+<section class="py-32 px-12 max-w-screen-2xl mx-auto" id="expertise">
+<div class="mb-20">
+<p class="text-label text-primary mb-4 text-center">Areas of work</p>
+<h2 class="text-5xl font-headline italic text-center">Gentle support for complex moments.</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-y-16 gap-x-12">
+<!-- Topic 1 -->
+<div class="group">
+<div class="mb-6">
+<span class="material-symbols-outlined text-4xl text-primary font-extralight" data-icon="waves">waves</span>
+</div>
+<h3 class="text-2xl font-headline italic mb-4 group-hover:text-primary transition-colors">Anxiety &amp; Tension</h3>
+<p class="text-on-surface-variant font-light leading-relaxed">Finding the quiet center amidst the storm of constant worry and physical unease.</p>
+</div>
+<!-- Topic 2 -->
+<div class="group">
+<div class="mb-6">
+<span class="material-symbols-outlined text-4xl text-primary font-extralight" data-icon="cloud">cloud</span>
+</div>
+<h3 class="text-2xl font-headline italic mb-4 group-hover:text-primary transition-colors">Depression &amp; Lethargy</h3>
+<p class="text-on-surface-variant font-light leading-relaxed">Slowly re-engaging with the colors of life when everything feels monochrome and heavy.</p>
+</div>
+<!-- Topic 3 -->
+<div class="group">
+<div class="mb-6">
+<span class="material-symbols-outlined text-4xl text-primary font-extralight" data-icon="energy_savings_leaf">energy_savings_leaf</span>
+</div>
+<h3 class="text-2xl font-headline italic mb-4 group-hover:text-primary transition-colors">Burnout &amp; Exhaustion</h3>
+<p class="text-on-surface-variant font-light leading-relaxed">Restoring the vital boundary between what you give to the world and what you keep for yourself.</p>
+</div>
+<!-- Topic 4 -->
+<div class="group">
+<div class="mb-6">
+<span class="material-symbols-outlined text-4xl text-primary font-extralight" data-icon="favorite">favorite</span>
+</div>
+<h3 class="text-2xl font-headline italic mb-4 group-hover:text-primary transition-colors">Relationships</h3>
+<p class="text-on-surface-variant font-light leading-relaxed">Navigating the intricate patterns of connection, intimacy, and communication with others.</p>
+</div>
+<!-- Topic 5 -->
+<div class="group">
+<div class="mb-6">
+<span class="material-symbols-outlined text-4xl text-primary font-extralight" data-icon="self_care">self_care</span>
+</div>
+<h3 class="text-2xl font-headline italic mb-4 group-hover:text-primary transition-colors">Self-Esteem</h3>
+<p class="text-on-surface-variant font-light leading-relaxed">Cultivating a kinder internal monologue and recognizing your inherent, quiet worth.</p>
+</div>
+<!-- Topic 6 -->
+<div class="group">
+<div class="mb-6">
+<span class="material-symbols-outlined text-4xl text-primary font-extralight" data-icon="autostop">autostop</span>
+</div>
+<h3 class="text-2xl font-headline italic mb-4 group-hover:text-primary transition-colors">Life Transitions</h3>
+<p class="text-on-surface-variant font-light leading-relaxed">Holding space for the grief and growth that comes with significant shifts in identity or circumstance.</p>
+</div>
+</div>
+</section>
+<!-- How It Works -->
+<section class="py-32 px-12 bg-surface-container-highest/30" id="process">
+<div class="max-w-screen-xl mx-auto">
+<div class="flex flex-col md:flex-row justify-between items-start gap-12">
+<div class="md:w-1/3">
+<p class="text-label text-primary mb-6">Process</p>
+<h2 class="text-5xl font-headline italic mb-8">How we walk <br/> this path.</h2>
+</div>
+<div class="md:w-2/3 grid grid-cols-1 md:grid-cols-3 gap-12 relative">
+<div class="relative">
+<span class="text-[80px] font-headline text-tertiary-container/20 absolute -top-12 -left-4 select-none">01</span>
+<h4 class="text-xl font-headline italic mb-4 mt-6">First Session</h4>
+<p class="text-on-surface-variant font-light leading-relaxed text-sm">A 50-minute consultation to understand your needs and see if our dialogue feels right for you.</p>
+</div>
+<div class="relative">
+<span class="text-[80px] font-headline text-tertiary-container/20 absolute -top-12 -left-4 select-none">02</span>
+<h4 class="text-xl font-headline italic mb-4 mt-6">Ongoing Work</h4>
+<p class="text-on-surface-variant font-light leading-relaxed text-sm">Weekly or bi-weekly meetings focused on deepening understanding and developing new coping tools.</p>
+</div>
+<div class="relative">
+<span class="text-[80px] font-headline text-tertiary-container/20 absolute -top-12 -left-4 select-none">03</span>
+<h4 class="text-xl font-headline italic mb-4 mt-6">Integrated Growth</h4>
+<p class="text-on-surface-variant font-light leading-relaxed text-sm">Moving forward with a clearer sense of self and the internal resources to navigate life's weather.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- FAQ Section -->
+<section class="py-32 px-12 max-w-screen-md mx-auto" id="faq">
+<div class="text-center mb-20">
+<p class="text-label text-primary mb-4">Common Questions</p>
+<h2 class="text-4xl font-headline italic">Seeking clarity.</h2>
+</div>
+<div class="space-y-4">
+<!-- Accordion Style Item -->
+<details class="group p-6 border-b border-tertiary-container/30 open:bg-surface-container-low transition-all rounded-xl">
+<summary class="list-none cursor-pointer flex justify-between items-center text-on-surface font-light text-lg">
+<span>How long does a session last?</span>
+<span class="material-symbols-outlined text-tertiary-container group-open:rotate-180 transition-transform">expand_more</span>
+</summary>
+<div class="mt-6 text-on-surface-variant font-light leading-relaxed">
+                        Standard sessions are 50 minutes long. This allows for a focused dialogue while leaving time for transition and reflection.
+                    </div>
+</details>
+<details class="group p-6 border-b border-tertiary-container/30 open:bg-surface-container-low transition-all rounded-xl">
+<summary class="list-none cursor-pointer flex justify-between items-center text-on-surface font-light text-lg">
+<span>Do you offer online consultations?</span>
+<span class="material-symbols-outlined text-tertiary-container group-open:rotate-180 transition-transform">expand_more</span>
+</summary>
+<div class="mt-6 text-on-surface-variant font-light leading-relaxed">
+                        Yes, I offer secure video consultations for clients who are unable to visit the office in person. The quality of care remains our primary focus.
+                    </div>
+</details>
+<details class="group p-6 border-b border-tertiary-container/30 open:bg-surface-container-low transition-all rounded-xl">
+<summary class="list-none cursor-pointer flex justify-between items-center text-on-surface font-light text-lg">
+<span>Is my privacy protected?</span>
+<span class="material-symbols-outlined text-tertiary-container group-open:rotate-180 transition-transform">expand_more</span>
+</summary>
+<div class="mt-6 text-on-surface-variant font-light leading-relaxed">
+                        Confidentiality is the cornerstone of our practice. All records are stored according to GDPR and professional ethical standards.
+                    </div>
+</details>
+<details class="group p-6 border-b border-tertiary-container/30 open:bg-surface-container-low transition-all rounded-xl">
+<summary class="list-none cursor-pointer flex justify-between items-center text-on-surface font-light text-lg">
+<span>What is your cancellation policy?</span>
+<span class="material-symbols-outlined text-tertiary-container group-open:rotate-180 transition-transform">expand_more</span>
+</summary>
+<div class="mt-6 text-on-surface-variant font-light leading-relaxed">
+                        I ask for at least 24 hours' notice for cancellations. This allows me to offer the time to another person who may be waiting for support.
+                    </div>
+</details>
+<details class="group p-6 border-b border-tertiary-container/30 open:bg-surface-container-low transition-all rounded-xl">
+<summary class="list-none cursor-pointer flex justify-between items-center text-on-surface font-light text-lg">
+<span>How many sessions will I need?</span>
+<span class="material-symbols-outlined text-tertiary-container group-open:rotate-180 transition-transform">expand_more</span>
+</summary>
+<div class="mt-6 text-on-surface-variant font-light leading-relaxed">
+                        The duration of therapy is highly individual. Some find clarity in a few sessions, while others benefit from longer-term exploratory work.
+                    </div>
+</details>
+<details class="group p-6 border-b border-tertiary-container/30 open:bg-surface-container-low transition-all rounded-xl">
+<summary class="list-none cursor-pointer flex justify-between items-center text-on-surface font-light text-lg">
+<span>Do you accept insurance?</span>
+<span class="material-symbols-outlined text-tertiary-container group-open:rotate-180 transition-transform">expand_more</span>
+</summary>
+<div class="mt-6 text-on-surface-variant font-light leading-relaxed">
+                        I work with several major providers. Please contact me with your details so we can verify coverage before our first session.
+                    </div>
+</details>
+</div>
+</section>
+<!-- Booking & Contact -->
+<section class="py-32 px-12 max-w-screen-2xl mx-auto" id="contact">
+<div class="bg-surface-container-lowest border-[0.5px] border-tertiary-container/20 rounded-2xl overflow-hidden shadow-2xl shadow-on-surface/5 flex flex-col md:flex-row">
+<div class="md:w-1/2 p-16 bg-surface-container-low/50">
+<p class="text-label text-primary mb-8">Begin the conversation</p>
+<h2 class="text-5xl font-headline italic mb-12">Take a quiet step <br/> forward.</h2>
+<div class="space-y-8">
+<div class="flex gap-6 items-start">
+<span class="material-symbols-outlined text-primary" data-icon="location_on">location_on</span>
+<div>
+<p class="text-label text-[10px] mb-1">Our Space</p>
+<p class="text-on-surface-variant font-light">Strandgade 44, 1401 <br/> Copenhagen, Denmark</p>
+</div>
+</div>
+<div class="flex gap-6 items-start">
+<span class="material-symbols-outlined text-primary" data-icon="send">send</span>
+<div>
+<p class="text-label text-[10px] mb-1">Direct Reach</p>
+<a class="text-on-surface font-medium hover:text-primary transition-colors inline-flex items-center gap-2" href="#">
+                                    Message via Telegram
+                                </a>
+</div>
+</div>
+</div>
+</div>
+<div class="md:w-1/2 p-16">
+<form action="#" class="space-y-8">
+<div>
+<label class="text-label text-[10px] block mb-2">Name</label>
+<input class="w-full bg-transparent border-b border-outline-variant/30 focus:border-primary focus:ring-0 px-0 py-2 transition-all outline-none font-light" placeholder="Your full name" type="text"/>
+</div>
+<div>
+<label class="text-label text-[10px] block mb-2">Nature of request</label>
+<input class="w-full bg-transparent border-b border-outline-variant/30 focus:border-primary focus:ring-0 px-0 py-2 transition-all outline-none font-light" placeholder="A few words about why you're reaching out" type="text"/>
+</div>
+<div>
+<label class="text-label text-[10px] block mb-2">Preferred Time</label>
+<select class="w-full bg-transparent border-b border-outline-variant/30 focus:border-primary focus:ring-0 px-0 py-2 transition-all outline-none font-light appearance-none">
+<option>Weekday Mornings</option>
+<option>Weekday Afternoons</option>
+<option>Evenings</option>
+</select>
+</div>
+<button class="w-full bg-primary text-white px-10 py-4 rounded-full text-label font-medium hover:opacity-90 transition-all duration-300 shadow-md" type="submit">
+                            Send Inquiry
+                        </button>
+</form>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="w-full border-t border-[#56c39e]/10 bg-[#f5f3ee] dark:bg-stone-900">
+<div class="flex flex-col md:flex-row justify-between items-center px-12 py-16 w-full max-w-screen-2xl mx-auto">
+<div class="mb-8 md:mb-0">
+<div class="text-lg font-serif italic text-stone-800 dark:text-stone-100">The Quiet Dialogue</div>
+<p class="text-[10px] tracking-widest uppercase text-stone-500 mt-2">© 2024 The Human Sanctuary. All rights reserved.</p>
+</div>
+<div class="flex gap-12 items-center">
+<div class="flex flex-col md:flex-row gap-8">
+<a class="text-stone-500 dark:text-stone-400 text-[10px] tracking-widest uppercase hover:text-[#5c5794] transition-colors" href="#">Privacy Policy</a>
+<a class="text-stone-500 dark:text-stone-400 text-[10px] tracking-widest uppercase hover:text-[#5c5794] transition-colors" href="#">Terms of Service</a>
+<a class="text-stone-500 dark:text-stone-400 text-[10px] tracking-widest uppercase hover:text-[#5c5794] transition-colors" href="#">Telegram</a>
+</div>
+</div>
+</div>
+</footer>
+</body></html>
