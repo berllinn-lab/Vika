@@ -12,46 +12,60 @@ concurrency:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v1.2.0
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          HOST_PORT: ${{ secrets.HOST_PORT }}
+          SESSION_PASSWORD: ${{ secrets.SESSION_PASSWORD }}
+          ADMIN_LOGIN: ${{ secrets.ADMIN_LOGIN }}
+          ADMIN_PASSWORD_HASH: ${{ secrets.ADMIN_PASSWORD_HASH }}
         with:
           host: ${{ secrets.SSH_HOST }}
           port: ${{ secrets.SSH_PORT }}
           username: ${{ secrets.SSH_USER }}
           password: ${{ secrets.SSH_PASSWORD }}
           script_stop: true
+          command_timeout: 20m
+          envs: GH_TOKEN,GH_REPO,HOST_PORT,SESSION_PASSWORD,ADMIN_LOGIN,ADMIN_PASSWORD_HASH
           script: |
             set -e
             APP_DIR=/opt/quiet-dialogue
             mkdir -p "$APP_DIR"
             cd "$APP_DIR"
 
+            CLONE_URL="https://x-access-token:${GH_TOKEN}@github.com/${GH_REPO}.git"
+
             if [ ! -d .git ]; then
-              git clone https://github.com/${{ github.repository }}.git .
+              git clone "$CLONE_URL" .
             else
+              git remote set-url origin "$CLONE_URL"
               git fetch --all --prune
               git reset --hard origin/main
             fi
 
-            # .env пишется из GitHub Secrets на каждый деплой
             cat > .env <<EOF
-            HOST_PORT=${{ secrets.HOST_PORT }}
-            SESSION_PASSWORD=${{ secrets.SESSION_PASSWORD }}
-            ADMIN_LOGIN=${{ secrets.ADMIN_LOGIN }}
-            ADMIN_PASSWORD_HASH=${{ secrets.ADMIN_PASSWORD_HASH }}
+            HOST_PORT=${HOST_PORT}
+            SESSION_PASSWORD=${SESSION_PASSWORD}
+            ADMIN_LOGIN=${ADMIN_LOGIN}
+            ADMIN_PASSWORD_HASH=${ADMIN_PASSWORD_HASH}
             EOF
             chmod 600 .env
 
             mkdir -p data public/uploads
 
-            # Бэкап БД перед деплоем (хранится 20 последних)
             if [ -f data/site.db ]; then
               mkdir -p backups
               cp data/site.db "backups/site-$(date +%Y%m%d-%H%M%S).db"
               ls -1t backups/site-*.db | tail -n +21 | xargs -r rm --
             fi
 
-            docker compose pull || true
             docker compose up -d --build
             docker image prune -f
+
+            # Убираем токен из remote, чтобы он не лежал в .git/config
+            git remote set-url origin "https://github.com/${GH_REPO}.git"
