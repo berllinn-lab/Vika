@@ -1,0 +1,57 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          port: ${{ secrets.SSH_PORT }}
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          script_stop: true
+          script: |
+            set -e
+            APP_DIR=/opt/quiet-dialogue
+            mkdir -p "$APP_DIR"
+            cd "$APP_DIR"
+
+            if [ ! -d .git ]; then
+              git clone https://github.com/${{ github.repository }}.git .
+            else
+              git fetch --all --prune
+              git reset --hard origin/main
+            fi
+
+            # .env пишется из GitHub Secrets на каждый деплой
+            cat > .env <<EOF
+            HOST_PORT=${{ secrets.HOST_PORT }}
+            SESSION_PASSWORD=${{ secrets.SESSION_PASSWORD }}
+            ADMIN_LOGIN=${{ secrets.ADMIN_LOGIN }}
+            ADMIN_PASSWORD_HASH=${{ secrets.ADMIN_PASSWORD_HASH }}
+            EOF
+            chmod 600 .env
+
+            mkdir -p data public/uploads
+
+            # Бэкап БД перед деплоем (хранится 20 последних)
+            if [ -f data/site.db ]; then
+              mkdir -p backups
+              cp data/site.db "backups/site-$(date +%Y%m%d-%H%M%S).db"
+              ls -1t backups/site-*.db | tail -n +21 | xargs -r rm --
+            fi
+
+            docker compose pull || true
+            docker compose up -d --build
+            docker image prune -f

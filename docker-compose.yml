@@ -1,0 +1,16 @@
+services:
+  web:
+    build: .
+    image: quiet-dialogue:latest
+    container_name: quiet-dialogue
+    restart: unless-stopped
+    ports:
+      - "${HOST_PORT:-3000}:3000"
+    environment:
+      NODE_ENV: production
+      SESSION_PASSWORD: ${SESSION_PASSWORD}
+      ADMIN_LOGIN: ${ADMIN_LOGIN}
+      ADMIN_PASSWORD_HASH: ${ADMIN_PASSWORD_HASH}
+    volumes:
+      - ./data:/app/data
+      - ./public/uploads:/app/public/uploads

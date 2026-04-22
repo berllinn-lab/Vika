@@ -39,28 +39,74 @@ npm run dev
 9. **«Сохранить»** — изменения уходят в БД. **«Отмена»** — откат к состоянию до правки.
 10. Выход — иконка logout на той же панели.
 
-## Деплой на VPS (коротко)
+## Деплой: Docker + GitHub Actions (myjino VPS)
+
+**Один раз** настраиваем сервер (`803820a5872d.vps.myjino.ru`, SSH порт `49355`):
 
 ```bash
-# На сервере
-git clone <repo> /opt/quiet-dialogue
-cd /opt/quiet-dialogue
-npm ci
-cp .env.example .env   # и заполнить
-node scripts/hash.js "реальный_пароль"   # → в ADMIN_PASSWORD_HASH
-npm run build
-
-# Запуск под pm2 (или systemd)
-npm i -g pm2
-pm2 start "npm start" --name quiet-dialogue
-pm2 save
-pm2 startup
+# с локальной машины
+scp -P 49355 scripts/server-bootstrap.sh root@803820a5872d.vps.myjino.ru:/root/
+ssh -p 49355 root@803820a5872d.vps.myjino.ru bash /root/server-bootstrap.sh
 ```
 
-Перед nginx/Caddy — проксировать на `127.0.0.1:3000`, выдать TLS.
+Это поставит Docker и создаст `/opt/quiet-dialogue`.
 
-### Бэкап
-Все данные — в папке `data/site.db` и `public/uploads/`. Бэкапить эти два пути.
+**GitHub Secrets** (Settings → Secrets and variables → Actions → New repository secret), репо `berllinn-lab/Vika`:
+
+| Secret | Значение |
+|---|---|
+| `SSH_HOST` | `803820a5872d.vps.myjino.ru` |
+| `SSH_PORT` | `49355` |
+| `SSH_USER` | `root` |
+| `SSH_PASSWORD` | (пароль от сервера) |
+| `HOST_PORT` | `80` |
+| `ADMIN_LOGIN` | `vika` |
+| `ADMIN_PASSWORD_HASH` | bcrypt-хеш (см. ниже) |
+| `SESSION_PASSWORD` | длинная случайная строка |
+
+Сгенерировать хеш пароля:
+```bash
+node scripts/hash.js "новый_пароль"
+```
+
+Сгенерировать `SESSION_PASSWORD`:
+```bash
+node -e "console.log(require('crypto').randomBytes(48).toString('base64url'))"
+```
+
+### Деплой
+- `git push origin main` → GitHub Actions сама подключится к серверу, подтянет код, пересоберёт и перезапустит контейнер.
+- Ручной запуск: Actions → Deploy → Run workflow.
+
+### Что происходит на сервере
+- Код лежит в `/opt/quiet-dialogue`.
+- Перед деплоем — бэкап `data/site.db` в `backups/` (храним 20 последних).
+- БД и загруженные фото — volumes (`./data`, `./public/uploads`) и не теряются при пересборке.
+- Контейнер: `docker compose up -d --build`, слушает порт `HOST_PORT` (по умолчанию 80).
+
+### Привязка домена `vikavasilieva.ru`
+1. В DNS домена поставить A-запись на IP сервера myjino.
+2. Для HTTPS проще всего поставить Caddy перед контейнером:
+
+```bash
+# на сервере
+apt-get install -y caddy
+cat > /etc/caddy/Caddyfile <<'EOF'
+vikavasilieva.ru, www.vikavasilieva.ru {
+    reverse_proxy 127.0.0.1:3000
+}
+EOF
+systemctl restart caddy
+```
+
+В этом случае в GitHub Secrets поменяйте `HOST_PORT` на `3000` и запустите workflow снова — контейнер перестанет занимать 80-й порт, его возьмёт Caddy с авто-TLS от Let's Encrypt.
+
+### Смена пароля администратора
+```bash
+node scripts/hash.js "новый_пароль"
+# обновить ADMIN_PASSWORD_HASH в GitHub Secrets → Re-run workflow
+```
+
 
 ## Структура
 
