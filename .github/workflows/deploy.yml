@@ -49,9 +49,11 @@ jobs:
 
             # .env пишется атомарно одной командой через printf, чтобы drone-ssh
             # не вставлял свои проверки exit-кода между строками heredoc.
+            # $ в значениях экранируем как $$, иначе docker compose съест их при interpolation.
+            ESC_HASH=$(printf '%s' "$ADMIN_PASSWORD_HASH" | sed 's/\$/$$/g')
             umask 077
             printf 'HOST_PORT=%s\nSESSION_PASSWORD=%s\nADMIN_LOGIN=%s\nADMIN_PASSWORD_HASH=%s\n' \
-              "$HOST_PORT" "$SESSION_PASSWORD" "$ADMIN_LOGIN" "$ADMIN_PASSWORD_HASH" > .env
+              "$HOST_PORT" "$SESSION_PASSWORD" "$ADMIN_LOGIN" "$ESC_HASH" > .env
             umask 022
 
             mkdir -p data public/uploads
