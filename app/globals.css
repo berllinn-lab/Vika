@@ -34,6 +34,10 @@ body {
   box-shadow: 0 0 0 1px rgba(92, 87, 148, 0.25);
   background-color: rgba(228, 223, 255, 0.15);
   cursor: text;
+  /* Поверх ссылок/кнопок-обёрток, чтобы клик попадал в contenteditable, */
+  /* а не вызывал переход по ссылке. */
+  position: relative;
+  z-index: 5;
 }
 
 .qd-edit-mode .qd-editable:hover {
@@ -43,6 +47,19 @@ body {
 .qd-edit-mode .qd-editable:focus {
   box-shadow: 0 0 0 2px #5c5794;
   background-color: #fff;
+}
+
+/* В режиме редактирования блокируем навигацию по любым ссылкам внутри страницы,
+   чтобы случайный клик не уводил пользователя. */
+body.qd-edit-mode a {
+  cursor: text;
+}
+body.qd-edit-mode a[href]:not([data-qd-allow-nav]) {
+  pointer-events: none;
+}
+body.qd-edit-mode a[href]:not([data-qd-allow-nav]) .qd-editable,
+body.qd-edit-mode a[href]:not([data-qd-allow-nav]) [contenteditable="true"] {
+  pointer-events: auto;
 }
 
 .qd-edit-mode [data-qd-list-item] {

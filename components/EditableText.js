@@ -65,6 +65,7 @@ export default function EditableText({
       suppressContentEditableWarning
       onBlur={editable ? handleBlur : undefined}
       onKeyDown={editable ? handleKeyDown : undefined}
+      onClick={editable ? (e) => { e.stopPropagation(); e.preventDefault(); ref.current?.focus(); } : undefined}
       data-placeholder={placeholder}
       {...rest}
     >
