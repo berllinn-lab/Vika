@@ -5,11 +5,13 @@ import EditableText from './EditableText';
 import EditablePhoto from './EditablePhoto';
 import EditableIcon from './EditableIcon';
 import ItemControls, { AddItemButton } from './ItemControls';
+import SectionToggle from './SectionToggle';
 import ContactForm from './ContactForm';
 
 export default function Landing() {
-  const { content } = useEdit();
+  const { content, editMode } = useEdit();
   const c = content;
+  const isHidden = (id) => Boolean(c._hidden?.[id]);
 
   return (
     <>
@@ -44,7 +46,8 @@ export default function Landing() {
 
       <main className="pt-24 overflow-x-hidden">
         {/* Hero */}
-        <section className="min-h-screen flex items-center px-6 md:px-12 max-w-screen-2xl mx-auto">
+        <section id="hero" className={`min-h-screen flex items-center px-6 md:px-12 max-w-screen-2xl mx-auto relative${isHidden('hero') ? (editMode ? ' opacity-40' : ' hidden') : ''}`}>
+          <SectionToggle id="hero" />
           <div className="grid grid-cols-1 md:grid-cols-12 gap-12 items-center w-full">
             <div className="md:col-span-7 flex flex-col items-start">
               <EditableText as="p" path="hero.eyebrow" value={c.hero?.eyebrow} className="text-label text-primary mb-8" />
@@ -75,7 +78,8 @@ export default function Landing() {
         </section>
 
         {/* About */}
-        <section id="about" className="bg-surface-container-low py-32 px-6 md:px-12">
+        <section id="about" className={`bg-surface-container-low py-32 px-6 md:px-12 relative${isHidden('about') ? (editMode ? ' opacity-40' : ' hidden') : ''}`}>
+          <SectionToggle id="about" />
           <div className="max-w-screen-2xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-16 md:gap-24">
             <div className="md:col-span-7">
               <EditableText as="p" path="about.eyebrow" value={c.about?.eyebrow} className="text-label text-primary mb-6" />
@@ -107,7 +111,8 @@ export default function Landing() {
         </section>
 
         {/* Expertise */}
-        <section id="expertise" className="py-32 px-6 md:px-12 max-w-screen-2xl mx-auto">
+        <section id="expertise" className={`py-32 px-6 md:px-12 max-w-screen-2xl mx-auto relative${isHidden('expertise') ? (editMode ? ' opacity-40' : ' hidden') : ''}`}>
+          <SectionToggle id="expertise" />
           <div className="mb-20">
             <EditableText as="p" path="expertise.eyebrow" value={c.expertise?.eyebrow} className="text-label text-primary mb-4 text-center" />
             <EditableText as="h2" path="expertise.title" value={c.expertise?.title} className="text-4xl md:text-5xl font-headline italic text-center" />
@@ -134,7 +139,8 @@ export default function Landing() {
         </section>
 
         {/* Process */}
-        <section id="process" className="py-32 px-6 md:px-12 bg-surface-container-highest/30">
+        <section id="process" className={`py-32 px-6 md:px-12 bg-surface-container-highest/30 relative${isHidden('process') ? (editMode ? ' opacity-40' : ' hidden') : ''}`}>
+          <SectionToggle id="process" />
           <div className="max-w-screen-xl mx-auto">
             <div className="flex flex-col md:flex-row justify-between items-start gap-12">
               <div className="md:w-1/3">
@@ -168,7 +174,8 @@ export default function Landing() {
         </section>
 
         {/* FAQ */}
-        <section id="faq" className="py-32 px-6 md:px-12 max-w-screen-md mx-auto">
+        <section id="faq" className={`py-32 px-6 md:px-12 max-w-screen-md mx-auto relative${isHidden('faq') ? (editMode ? ' opacity-40' : ' hidden') : ''}`}>
+          <SectionToggle id="faq" />
           <div className="text-center mb-20">
             <EditableText as="p" path="faq.eyebrow" value={c.faq?.eyebrow} className="text-label text-primary mb-4" />
             <EditableText as="h2" path="faq.title" value={c.faq?.title} className="text-4xl font-headline italic" />
@@ -199,7 +206,8 @@ export default function Landing() {
         </section>
 
         {/* Contact */}
-        <section id="contact" className="py-32 px-6 md:px-12 max-w-screen-2xl mx-auto">
+        <section id="contact" className={`py-32 px-6 md:px-12 max-w-screen-2xl mx-auto relative${isHidden('contact') ? (editMode ? ' opacity-40' : ' hidden') : ''}`}>
+          <SectionToggle id="contact" />
           <div className="bg-surface-container-lowest border-[0.5px] border-tertiary-container/20 rounded-2xl overflow-hidden shadow-2xl shadow-on-surface/5 flex flex-col md:flex-row">
             <div className="md:w-1/2 p-10 md:p-16 bg-surface-container-low/50">
               <EditableText as="p" path="contact.eyebrow" value={c.contact?.eyebrow} className="text-label text-primary mb-8" />

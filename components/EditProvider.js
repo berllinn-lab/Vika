@@ -43,6 +43,17 @@ export function EditProvider({ initialContent, isAdmin, children }) {
     setDirty(true);
   }, []);
 
+  // Скрыть/показать секцию по id
+  const toggleSection = useCallback((id) => {
+    setContent((prev) => {
+      const next = structuredClone(prev);
+      if (!next._hidden) next._hidden = {};
+      next._hidden[id] = !next._hidden[id];
+      return next;
+    });
+    setDirty(true);
+  }, []);
+
   const save = useCallback(async () => {
     setSaving(true);
     setStatus('');
@@ -138,6 +149,7 @@ export function EditProvider({ initialContent, isAdmin, children }) {
       setEditMode,
       update,
       replaceSection,
+      toggleSection,
       save,
       discard,
       updateAndSave,
@@ -145,7 +157,7 @@ export function EditProvider({ initialContent, isAdmin, children }) {
       saving,
       status,
     }),
-    [content, isAdmin, editMode, update, replaceSection, save, discard, updateAndSave, dirty, saving, status]
+    [content, isAdmin, editMode, update, replaceSection, toggleSection, save, discard, updateAndSave, dirty, saving, status]
   );
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
