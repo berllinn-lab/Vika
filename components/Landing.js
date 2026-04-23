@@ -7,6 +7,7 @@ import EditableIcon from './EditableIcon';
 import ItemControls, { AddItemButton } from './ItemControls';
 import SectionToggle from './SectionToggle';
 import ContactForm from './ContactForm';
+import InstagramSection from './InstagramSection';
 
 export default function Landing() {
   const { content, editMode } = useEdit();
@@ -259,6 +260,9 @@ export default function Landing() {
             </div>
           </div>
         </section>
+
+        {/* Instagram */}
+        <InstagramSection isHidden={isHidden('instagram')} editMode={editMode} />
 
         {/* Contact */}
         <section id="contact" className={`py-32 px-6 md:px-12 max-w-screen-2xl mx-auto relative${isHidden('contact') ? (editMode ? ' opacity-40' : ' hidden') : ''}`}>
