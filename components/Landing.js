@@ -205,6 +205,60 @@ export default function Landing() {
           </div>
         </section>
 
+        {/* Gallery */}
+        <section id="gallery" className={`py-32 px-6 md:px-12 bg-surface-container-low relative${isHidden('gallery') ? (editMode ? ' opacity-40' : ' hidden') : ''}`}>
+          <SectionToggle id="gallery" />
+          <div className="max-w-screen-2xl mx-auto">
+            <div className="text-center mb-20">
+              <EditableText as="p" path="gallery.eyebrow" value={c.gallery?.eyebrow} className="text-label text-primary mb-4" />
+              <EditableText as="h2" path="gallery.title" value={c.gallery?.title} className="text-4xl font-headline italic" />
+            </div>
+            <div className="columns-1 sm:columns-2 lg:columns-3 gap-4 space-y-4">
+              {(c.gallery?.items || []).map((it, i) => (
+                <div key={i} data-qd-list-item className="relative break-inside-avoid">
+                  <ItemControls section="gallery.items" index={i} length={(c.gallery?.items || []).length} />
+                  <div className="overflow-hidden rounded-xl bg-surface-container group relative">
+                    {!it.photo && !editMode && null}
+                    {(!it.photo && editMode) ? (
+                      <div className="aspect-[4/5] bg-surface-container-highest/60 flex flex-col items-center justify-center gap-3 cursor-pointer relative">
+                        <span className="material-symbols-outlined text-outline/40" style={{ fontSize: 48 }}>image</span>
+                        <EditablePhoto
+                          path={`gallery.items.${i}.photo`}
+                          value={it.photo}
+                          alt={it.caption || `Фото ${i + 1}`}
+                          className="absolute inset-0"
+                        />
+                      </div>
+                    ) : it.photo ? (
+                      <EditablePhoto
+                        path={`gallery.items.${i}.photo`}
+                        value={it.photo}
+                        alt={it.caption || `Фото ${i + 1}`}
+                        className="w-full"
+                      />
+                    ) : null}
+                    <div className="px-4 py-3">
+                      <EditableText
+                        as="p"
+                        path={`gallery.items.${i}.caption`}
+                        value={it.caption}
+                        className="text-label text-on-surface-variant"
+                      />
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="text-center mt-12">
+              <AddItemButton
+                section="gallery.items"
+                label="Добавить фото"
+                template={{ photo: '', caption: '' }}
+              />
+            </div>
+          </div>
+        </section>
+
         {/* Contact */}
         <section id="contact" className={`py-32 px-6 md:px-12 max-w-screen-2xl mx-auto relative${isHidden('contact') ? (editMode ? ' opacity-40' : ' hidden') : ''}`}>
           <SectionToggle id="contact" />
