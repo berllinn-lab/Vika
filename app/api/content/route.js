@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { getContent, setManyContent } from '@/lib/db';
 import { isAdmin } from '@/lib/auth';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   return NextResponse.json(getContent());
 }
