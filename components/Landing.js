@@ -246,6 +246,9 @@ export default function Landing() {
               <a
                 key={i}
                 href={l.href}
+                data-qd-allow-nav=""
+                target={l.href && l.href !== '#' ? '_blank' : undefined}
+                rel="noopener noreferrer"
                 className="text-stone-500 text-[10px] tracking-widest uppercase hover:text-[#5c5794] transition-colors"
               >
                 <EditableText as="span" path={`footer.links.${i}.label`} value={l.label} />
