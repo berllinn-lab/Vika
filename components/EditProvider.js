@@ -4,6 +4,10 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useRef, use
 
 const Ctx = createContext(null);
 
+export const DEFAULT_SECTION_ORDER = [
+  'hero', 'about', 'expertise', 'process', 'faq', 'gallery', 'instagram', 'contact',
+];
+
 export function useEdit() {
   const c = useContext(Ctx);
   if (!c) throw new Error('useEdit must be used inside EditProvider');
@@ -119,6 +123,19 @@ export function EditProvider({ initialContent, isAdmin, children }) {
     [saveNow]
   );
 
+  // Переместить секцию вверх (-1) или вниз (+1) в порядке отображения
+  const moveSection = useCallback((id, delta) => {
+    setContent((prev) => {
+      const order = prev._order ? [...prev._order] : [...DEFAULT_SECTION_ORDER];
+      const idx = order.indexOf(id);
+      const j = idx + delta;
+      if (idx < 0 || j < 0 || j >= order.length) return prev;
+      [order[idx], order[j]] = [order[j], order[idx]];
+      return { ...prev, _order: order };
+    });
+    setDirty(true);
+  }, []);
+
   const discard = useCallback(() => {
     setContent(initialRef.current);
     setDirty(false);
@@ -150,6 +167,7 @@ export function EditProvider({ initialContent, isAdmin, children }) {
       update,
       replaceSection,
       toggleSection,
+      moveSection,
       save,
       discard,
       updateAndSave,
@@ -157,7 +175,7 @@ export function EditProvider({ initialContent, isAdmin, children }) {
       saving,
       status,
     }),
-    [content, isAdmin, editMode, update, replaceSection, toggleSection, save, discard, updateAndSave, dirty, saving, status]
+    [content, isAdmin, editMode, update, replaceSection, toggleSection, moveSection, save, discard, updateAndSave, dirty, saving, status]
   );
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;

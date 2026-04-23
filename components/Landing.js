@@ -1,6 +1,7 @@
 'use client';
 
-import { useEdit } from './EditProvider';
+import React from 'react';
+import { useEdit, DEFAULT_SECTION_ORDER } from './EditProvider';
 import EditableText from './EditableText';
 import EditablePhoto from './EditablePhoto';
 import EditableIcon from './EditableIcon';
@@ -13,41 +14,11 @@ export default function Landing() {
   const { content, editMode } = useEdit();
   const c = content;
   const isHidden = (id) => Boolean(c._hidden?.[id]);
+  const order = c._order ?? DEFAULT_SECTION_ORDER;
 
-  return (
-    <>
-      {/* Nav */}
-      <nav className="fixed top-0 w-full z-50 bg-[#fbf9f4]/80 backdrop-blur-md">
-        <div className="flex justify-between items-center px-6 md:px-12 py-6 w-full max-w-screen-2xl mx-auto">
-          <EditableText
-            as="div"
-            path="brand"
-            value={c.brand}
-            className="text-xl font-serif italic text-stone-800"
-          />
-          <div className="hidden md:flex gap-10 items-center">
-            {(c.nav || []).map((item, i) => (
-              <a
-                key={i}
-                className="text-stone-600 hover:text-stone-900 transition-colors text-label"
-                href={item.href}
-              >
-                <EditableText as="span" path={`nav.${i}.label`} value={item.label} />
-              </a>
-            ))}
-            <a
-              href="#contact"
-              className="bg-primary-container/20 border border-primary-container text-on-primary-container px-6 py-2.5 rounded-full text-label hover:bg-primary-container hover:text-white transition-all duration-300"
-            >
-              Записаться
-            </a>
-          </div>
-        </div>
-      </nav>
-
-      <main className="pt-24 overflow-x-hidden">
-        {/* Hero */}
-        <section id="hero" className={`min-h-screen flex items-center px-6 md:px-12 max-w-screen-2xl mx-auto relative${isHidden('hero') ? (editMode ? ' opacity-40' : ' hidden') : ''}`}>
+  const sectionMap = {
+    hero: (
+      <section id="hero" className={`min-h-screen flex items-center px-6 md:px-12 max-w-screen-2xl mx-auto relative${isHidden('hero') ? (editMode ? ' opacity-40' : ' hidden') : ''}`}>
           <SectionToggle id="hero" />
           <div className="grid grid-cols-1 md:grid-cols-12 gap-12 items-center w-full">
             <div className="md:col-span-7 flex flex-col items-start">
@@ -77,9 +48,9 @@ export default function Landing() {
             </div>
           </div>
         </section>
-
-        {/* About */}
-        <section id="about" className={`bg-surface-container-low py-32 px-6 md:px-12 relative${isHidden('about') ? (editMode ? ' opacity-40' : ' hidden') : ''}`}>
+    ),
+    about: (
+      <section id="about" className={`bg-surface-container-low py-32 px-6 md:px-12 relative${isHidden('about') ? (editMode ? ' opacity-40' : ' hidden') : ''}`}>
           <SectionToggle id="about" />
           <div className="max-w-screen-2xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-16 md:gap-24">
             <div className="md:col-span-7">
@@ -110,9 +81,9 @@ export default function Landing() {
             </div>
           </div>
         </section>
-
-        {/* Expertise */}
-        <section id="expertise" className={`py-32 px-6 md:px-12 max-w-screen-2xl mx-auto relative${isHidden('expertise') ? (editMode ? ' opacity-40' : ' hidden') : ''}`}>
+    ),
+    expertise: (
+      <section id="expertise" className={`py-32 px-6 md:px-12 max-w-screen-2xl mx-auto relative${isHidden('expertise') ? (editMode ? ' opacity-40' : ' hidden') : ''}`}>
           <SectionToggle id="expertise" />
           <div className="mb-20">
             <EditableText as="p" path="expertise.eyebrow" value={c.expertise?.eyebrow} className="text-label text-primary mb-4 text-center" />
@@ -138,9 +109,9 @@ export default function Landing() {
             />
           </div>
         </section>
-
-        {/* Process */}
-        <section id="process" className={`py-32 px-6 md:px-12 bg-surface-container-highest/30 relative${isHidden('process') ? (editMode ? ' opacity-40' : ' hidden') : ''}`}>
+    ),
+    process: (
+      <section id="process" className={`py-32 px-6 md:px-12 bg-surface-container-highest/30 relative${isHidden('process') ? (editMode ? ' opacity-40' : ' hidden') : ''}`}>
           <SectionToggle id="process" />
           <div className="max-w-screen-xl mx-auto">
             <div className="flex flex-col md:flex-row justify-between items-start gap-12">
@@ -173,9 +144,9 @@ export default function Landing() {
             </div>
           </div>
         </section>
-
-        {/* FAQ */}
-        <section id="faq" className={`py-32 px-6 md:px-12 max-w-screen-md mx-auto relative${isHidden('faq') ? (editMode ? ' opacity-40' : ' hidden') : ''}`}>
+    ),
+    faq: (
+      <section id="faq" className={`py-32 px-6 md:px-12 max-w-screen-md mx-auto relative${isHidden('faq') ? (editMode ? ' opacity-40' : ' hidden') : ''}`}>
           <SectionToggle id="faq" />
           <div className="text-center mb-20">
             <EditableText as="p" path="faq.eyebrow" value={c.faq?.eyebrow} className="text-label text-primary mb-4" />
@@ -205,9 +176,9 @@ export default function Landing() {
             />
           </div>
         </section>
-
-        {/* Gallery */}
-        <section id="gallery" className={`py-32 px-6 md:px-12 bg-surface-container-low relative${isHidden('gallery') ? (editMode ? ' opacity-40' : ' hidden') : ''}`}>
+    ),
+    gallery: (
+      <section id="gallery" className={`py-32 px-6 md:px-12 bg-surface-container-low relative${isHidden('gallery') ? (editMode ? ' opacity-40' : ' hidden') : ''}`}>
           <SectionToggle id="gallery" />
           <div className="max-w-screen-2xl mx-auto">
             <div className="text-center mb-20">
@@ -260,12 +231,12 @@ export default function Landing() {
             </div>
           </div>
         </section>
-
-        {/* Instagram */}
-        <InstagramSection isHidden={isHidden('instagram')} editMode={editMode} />
-
-        {/* Contact */}
-        <section id="contact" className={`py-32 px-6 md:px-12 max-w-screen-2xl mx-auto relative${isHidden('contact') ? (editMode ? ' opacity-40' : ' hidden') : ''}`}>
+    ),
+    instagram: (
+      <InstagramSection isHidden={isHidden('instagram')} editMode={editMode} />
+    ),
+    contact: (
+      <section id="contact" className={`py-32 px-6 md:px-12 max-w-screen-2xl mx-auto relative${isHidden('contact') ? (editMode ? ' opacity-40' : ' hidden') : ''}`}>
           <SectionToggle id="contact" />
           <div className="bg-surface-container-lowest border-[0.5px] border-tertiary-container/20 rounded-2xl overflow-hidden shadow-2xl shadow-on-surface/5 flex flex-col md:flex-row">
             <div className="md:w-1/2 p-10 md:p-16 bg-surface-container-low/50">
@@ -299,6 +270,44 @@ export default function Landing() {
             </div>
           </div>
         </section>
+    ),
+  };
+
+  return (
+    <>
+      {/* Nav */}
+      <nav className="fixed top-0 w-full z-50 bg-[#fbf9f4]/80 backdrop-blur-md">
+        <div className="flex justify-between items-center px-6 md:px-12 py-6 w-full max-w-screen-2xl mx-auto">
+          <EditableText
+            as="div"
+            path="brand"
+            value={c.brand}
+            className="text-xl font-serif italic text-stone-800"
+          />
+          <div className="hidden md:flex gap-10 items-center">
+            {(c.nav || []).map((item, i) => (
+              <a
+                key={i}
+                className="text-stone-600 hover:text-stone-900 transition-colors text-label"
+                href={item.href}
+              >
+                <EditableText as="span" path={`nav.${i}.label`} value={item.label} />
+              </a>
+            ))}
+            <a
+              href="#contact"
+              className="bg-primary-container/20 border border-primary-container text-on-primary-container px-6 py-2.5 rounded-full text-label hover:bg-primary-container hover:text-white transition-all duration-300"
+            >
+              Записаться
+            </a>
+          </div>
+        </div>
+      </nav>
+
+      <main className="pt-24 overflow-x-hidden">
+        {order.map((id) => (
+          <React.Fragment key={id}>{sectionMap[id]}</React.Fragment>
+        ))}
       </main>
 
       {/* Footer */}
