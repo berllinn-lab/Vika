@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import SectionToggle from './SectionToggle';
 
 export default function InstagramSection({ isHidden, editMode }) {
   const [posts, setPosts] = useState(null); // null = loading
@@ -24,6 +25,7 @@ export default function InstagramSection({ isHidden, editMode }) {
       id="instagram"
       className={`py-32 px-6 md:px-12 bg-[#fbf9f4] relative${visibilityClass}`}
     >
+      <SectionToggle id="instagram" />
       <div className="max-w-screen-2xl mx-auto">
         <div className="text-center mb-20">
           <p className="text-label text-primary mb-4">Инстаграм</p>
