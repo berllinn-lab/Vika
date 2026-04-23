@@ -213,30 +213,31 @@ export default function Landing() {
               <EditableText as="p" path="gallery.eyebrow" value={c.gallery?.eyebrow} className="text-label text-primary mb-4" />
               <EditableText as="h2" path="gallery.title" value={c.gallery?.title} className="text-4xl font-headline italic" />
             </div>
-            <div className="columns-1 sm:columns-2 lg:columns-3 gap-4 space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {(c.gallery?.items || []).map((it, i) => (
-                <div key={i} data-qd-list-item className="relative break-inside-avoid">
+                <div key={i} data-qd-list-item className="relative">
                   <ItemControls section="gallery.items" index={i} length={(c.gallery?.items || []).length} />
                   <div className="overflow-hidden rounded-xl bg-surface-container group relative">
-                    {!it.photo && !editMode && null}
-                    {(!it.photo && editMode) ? (
-                      <div className="aspect-[4/5] bg-surface-container-highest/60 flex flex-col items-center justify-center gap-3 cursor-pointer relative">
-                        <span className="material-symbols-outlined text-outline/40" style={{ fontSize: 48 }}>image</span>
+                    <div className="aspect-[4/5] relative">
+                      {(!it.photo && editMode) ? (
+                        <div className="absolute inset-0 bg-surface-container-highest/60 flex flex-col items-center justify-center gap-3 cursor-pointer">
+                          <span className="material-symbols-outlined text-outline/40" style={{ fontSize: 48 }}>image</span>
+                          <EditablePhoto
+                            path={`gallery.items.${i}.photo`}
+                            value={it.photo}
+                            alt={it.caption || `Фото ${i + 1}`}
+                            className="absolute inset-0"
+                          />
+                        </div>
+                      ) : it.photo ? (
                         <EditablePhoto
                           path={`gallery.items.${i}.photo`}
                           value={it.photo}
                           alt={it.caption || `Фото ${i + 1}`}
                           className="absolute inset-0"
                         />
-                      </div>
-                    ) : it.photo ? (
-                      <EditablePhoto
-                        path={`gallery.items.${i}.photo`}
-                        value={it.photo}
-                        alt={it.caption || `Фото ${i + 1}`}
-                        className="w-full"
-                      />
-                    ) : null}
+                      ) : null}
+                    </div>
                     <div className="px-4 py-3">
                       <EditableText
                         as="p"
