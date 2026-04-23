@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useEdit } from './EditProvider';
 
-export default function EditablePhoto({ path, value, className = '', alt = '' }) {
+export default function EditablePhoto({ path, value, className = '', alt = '', autoHeight = false }) {
   const { isAdmin, editMode, updateAndSave } = useEdit();
   const inputRef = useRef(null);
   const [uploading, setUploading] = useState(false);
@@ -45,7 +45,7 @@ export default function EditablePhoto({ path, value, className = '', alt = '' })
         key={imgSrc}
         src={imgSrc}
         alt={alt}
-        className="w-full h-full object-cover grayscale-[20%] sepia-[10%]"
+        className={autoHeight ? 'w-full h-auto block grayscale-[20%] sepia-[10%]' : 'w-full h-full object-cover grayscale-[20%] sepia-[10%]'}
       />
       {editable ? (
         <>
