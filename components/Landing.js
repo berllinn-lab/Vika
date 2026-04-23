@@ -217,26 +217,27 @@ export default function Landing() {
               {(c.gallery?.items || []).map((it, i) => (
                 <div key={i} data-qd-list-item className="relative">
                   <ItemControls section="gallery.items" index={i} length={(c.gallery?.items || []).length} />
-                  <div className="overflow-hidden rounded-xl bg-surface-container group relative">
-                    {(!it.photo && editMode) ? (
-                      <div className="aspect-[4/5] bg-surface-container-highest/60 flex flex-col items-center justify-center gap-3 cursor-pointer relative">
-                        <span className="material-symbols-outlined text-outline/40" style={{ fontSize: 48 }}>image</span>
+                  <div className="overflow-hidden rounded-xl bg-surface-container group">
+                    <div className="aspect-[4/5] relative overflow-hidden">
+                      {(!it.photo && editMode) ? (
+                        <div className="absolute inset-0 bg-surface-container-highest/60 flex flex-col items-center justify-center gap-3">
+                          <span className="material-symbols-outlined text-outline/40" style={{ fontSize: 48 }}>image</span>
+                          <EditablePhoto
+                            path={`gallery.items.${i}.photo`}
+                            value={it.photo}
+                            alt={it.caption || `Фото ${i + 1}`}
+                            fill
+                          />
+                        </div>
+                      ) : it.photo ? (
                         <EditablePhoto
                           path={`gallery.items.${i}.photo`}
                           value={it.photo}
                           alt={it.caption || `Фото ${i + 1}`}
-                          className="absolute inset-0"
+                          fill
                         />
-                      </div>
-                    ) : it.photo ? (
-                      <EditablePhoto
-                        path={`gallery.items.${i}.photo`}
-                        value={it.photo}
-                        alt={it.caption || `Фото ${i + 1}`}
-                        className="w-full"
-                        autoHeight
-                      />
-                    ) : null}
+                      ) : null}
+                    </div>
                     <div className="px-4 py-3">
                       <EditableText
                         as="p"

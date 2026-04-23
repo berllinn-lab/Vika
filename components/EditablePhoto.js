@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useEdit } from './EditProvider';
 
-export default function EditablePhoto({ path, value, className = '', alt = '', autoHeight = false }) {
+export default function EditablePhoto({ path, value, className = '', alt = '', autoHeight = false, fill = false }) {
   const { isAdmin, editMode, updateAndSave } = useEdit();
   const inputRef = useRef(null);
   const [uploading, setUploading] = useState(false);
@@ -39,7 +39,7 @@ export default function EditablePhoto({ path, value, className = '', alt = '', a
   const imgSrc = value || '';
 
   return (
-    <div className={`relative ${className}`}>
+    <div className={fill ? `absolute inset-0 ${className}` : `relative ${className}`}>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         key={imgSrc}
