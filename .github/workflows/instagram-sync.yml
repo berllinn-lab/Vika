@@ -7,8 +7,101 @@ jobs:
   sync:
     runs-on: ubuntu-latest
     steps:
-      - name: Trigger Instagram sync
+      - name: Fetch posts from Apify
         run: |
-          curl -fsS -X POST \
-            -H "x-sync-secret: ${{ secrets.IG_SYNC_SECRET }}" \
-            "https://803820a5872d.vps.myjino.ru/api/instagram-sync"
+          curl -fsSL -X POST \
+            "https://api.apify.com/v2/acts/apify~instagram-profile-scraper/run-sync-get-dataset-items?token=${{ secrets.APIFY_TOKEN }}&timeout=120" \
+            -H "Content-Type: application/json" \
+            -d '{"usernames":["time_prenatal"],"resultsLimit":30}' \
+            -o /tmp/apify_result.json
+          echo "Apify data size: $(wc -c < /tmp/apify_result.json) bytes"
+
+      - name: Download photos and import to server
+        env:
+          IG_SYNC_SECRET: ${{ secrets.IG_SYNC_SECRET }}
+        run: |
+          python3 << 'PYEOF'
+          import json, urllib.request, urllib.error, sys, os
+
+          SERVER = "https://803820a5872d.vps.myjino.ru"
+          SECRET = os.environ["IG_SYNC_SECRET"]
+
+          with open("/tmp/apify_result.json") as f:
+              data = json.load(f)
+
+          posts = []
+          if data and isinstance(data, list) and data[0]:
+              posts = data[0].get("latestPosts") or data[0].get("posts") or []
+
+          print(f"Found {len(posts)} posts from Apify")
+
+          meta = []
+          for post in posts:
+              ig_id = post.get("id") or post.get("shortCode")
+              display_url = (post.get("displayUrl") or post.get("imageUrl")
+                             or post.get("thumbnailUrl") or "")
+              if not ig_id:
+                  continue
+
+              local_path = display_url  # fallback: CDN url
+
+              if display_url:
+                  try:
+                      # 1. Download from Instagram CDN (GHA runner has full internet)
+                      req = urllib.request.Request(
+                          display_url,
+                          headers={
+                              "User-Agent": (
+                                  "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+                                  "AppleWebKit/537.36 (KHTML, like Gecko) "
+                                  "Chrome/124.0.0.0 Safari/537.36"
+                              ),
+                              "Referer": "https://www.instagram.com/",
+                          },
+                      )
+                      with urllib.request.urlopen(req, timeout=30) as resp:
+                          img_data = resp.read()
+                          content_type = resp.headers.get("Content-Type", "image/jpeg")
+
+                      # 2. Upload raw bytes to server
+                      upload_req = urllib.request.Request(
+                          f"{SERVER}/api/instagram-photo",
+                          data=img_data,
+                          headers={
+                              "Content-Type": content_type,
+                              "x-sync-secret": SECRET,
+                              "x-photo-id": ig_id,
+                          },
+                          method="POST",
+                      )
+                      with urllib.request.urlopen(upload_req, timeout=30) as r:
+                          result = json.loads(r.read())
+                          local_path = result.get("path", display_url)
+                      print(f"OK  {ig_id} -> {local_path}")
+
+                  except Exception as e:
+                      print(f"FAIL {ig_id}: {e}", file=sys.stderr)
+                      local_path = display_url  # keep CDN url as fallback
+
+              meta.append({
+                  "id": ig_id,
+                  "photo_url": local_path,
+                  "caption": post.get("caption") or "",
+                  "permalink": post.get("url") or "https://www.instagram.com/time_prenatal/",
+                  "ig_timestamp": post.get("timestamp") or "",
+              })
+
+          # 3. Write metadata to DB
+          import_req = urllib.request.Request(
+              f"{SERVER}/api/instagram-import",
+              data=json.dumps({"posts": meta}).encode(),
+              headers={
+                  "Content-Type": "application/json",
+                  "x-sync-secret": SECRET,
+              },
+              method="POST",
+          )
+          with urllib.request.urlopen(import_req, timeout=30) as r:
+              result = json.loads(r.read())
+              print(f"Import result: {result}")
+          PYEOF
