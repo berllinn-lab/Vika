@@ -23,6 +23,24 @@ export default async function InquiriesPage() {
             ← На сайт
           </a>
         </div>
+        <div className="mb-8 flex items-start gap-3 bg-white border border-outline-variant/20 rounded-2xl px-5 py-4">
+          <span className="text-2xl leading-none mt-0.5">📬</span>
+          <div>
+            <p className="font-medium text-on-background">Уведомления в Telegram</p>
+            <p className="text-sm text-on-surface-variant mt-1">
+              Чтобы получать уведомления о новых заявках — напишите боту{' '}
+              <a
+                href="https://t.me/vikacrush_bot"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary underline underline-offset-2"
+              >
+                @vikacrush_bot
+              </a>{' '}
+              команду <code className="bg-surface-container-highest rounded px-1 py-0.5 text-xs">/start</code>
+            </p>
+          </div>
+        </div>
         <InquiriesList items={items} />
       </div>
     </div>
