@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation';
 import { isAdmin } from '@/lib/auth';
-import { listInquiries } from '@/lib/db';
+import { listInquiries, listTelegramSubscribersDetailed } from '@/lib/db';
 import InquiriesList from './InquiriesList';
 
 export const dynamic = 'force-dynamic';
@@ -8,6 +8,7 @@ export const dynamic = 'force-dynamic';
 export default async function InquiriesPage() {
   if (!(await isAdmin())) redirect('/admin/login');
   const items = listInquiries();
+  const tgSubscribers = listTelegramSubscribersDetailed();
   return (
     <div className="min-h-screen bg-surface-container-low py-16 px-6">
       <div className="max-w-4xl mx-auto">
@@ -41,7 +42,7 @@ export default async function InquiriesPage() {
             </p>
           </div>
         </div>
-        <InquiriesList items={items} />
+        <InquiriesList items={items} tgSubscribers={tgSubscribers} />
       </div>
     </div>
   );

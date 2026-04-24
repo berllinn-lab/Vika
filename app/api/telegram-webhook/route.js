@@ -17,9 +17,11 @@ export async function POST(req) {
 
   const chatId = message?.chat?.id;
   const text = message?.text?.trim() || '';
+  const firstName = message?.from?.first_name || '';
+  const username = message?.from?.username || '';
 
   if (chatId && text === '/start') {
-    addTelegramSubscriber(chatId);
+    addTelegramSubscriber(chatId, firstName, username);
     await sendTelegramMessage(
       chatId,
       '✅ Вы подписались на уведомления!\n\nТеперь каждый раз, когда кто-то оставит заявку на сайте, я сразу пришлю вам сообщение.',
