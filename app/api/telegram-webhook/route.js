@@ -22,10 +22,14 @@ export async function POST(req) {
 
   if (chatId && text === '/start') {
     addTelegramSubscriber(chatId, firstName, username);
-    await sendTelegramMessage(
-      chatId,
-      '✅ Вы подписались на уведомления!\n\nТеперь каждый раз, когда кто-то оставит заявку на сайте, я сразу пришлю вам сообщение.',
-    );
+    try {
+      await sendTelegramMessage(
+        chatId,
+        '✅ Вы подписались на уведомления!\n\nТеперь каждый раз, когда кто-то оставит заявку на сайте, я сразу пришлю вам сообщение.',
+      );
+    } catch {
+      // Telegram API недоступен — подписчик уже сохранён
+    }
   }
 
   return NextResponse.json({ ok: true });
