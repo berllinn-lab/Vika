@@ -1,0 +1,117 @@
+name: Telegram Poller
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+
+jobs:
+  poll:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Poll updates and register subscribers
+        env:
+          BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          GH_TOKEN: ${{ secrets.GH_DISPATCH_TOKEN }}
+          LAST_UPDATE_ID: ${{ vars.TELEGRAM_LAST_UPDATE_ID }}
+        run: |
+          python3 << 'EOF'
+          import urllib.request
+          import urllib.error
+          import json
+          import os
+
+          token = os.environ['BOT_TOKEN']
+          gh_token = os.environ['GH_TOKEN']
+          site_url = 'https://vikavasilieva.ru'
+          last_id = int(os.environ.get('LAST_UPDATE_ID') or '0')
+          offset = last_id + 1 if last_id > 0 else None
+
+          tg_url = f"https://api.telegram.org/bot{token}/getUpdates?timeout=0"
+          if offset:
+              tg_url += f"&offset={offset}"
+
+          req = urllib.request.urlopen(tg_url, timeout=30)
+          data = json.loads(req.read())
+          updates = data.get('result', [])
+          print(f"Got {len(updates)} updates (last_id={last_id})")
+
+          max_id = last_id
+          confirmed = set()
+
+          for update in updates:
+              uid = update['update_id']
+              if uid > max_id:
+                  max_id = uid
+
+              msg = update.get('message', {})
+              text = msg.get('text', '').strip()
+              chat_id = msg.get('chat', {}).get('id')
+              first_name = msg.get('from', {}).get('first_name', '')
+
+              if text == '/start' and chat_id:
+                  # Register via site webhook (saves to DB)
+                  body = json.dumps(update).encode()
+                  webhook_req = urllib.request.Request(
+                      f"{site_url}/api/telegram-webhook",
+                      data=body,
+                      headers={'Content-Type': 'application/json'},
+                      method='POST'
+                  )
+                  try:
+                      urllib.request.urlopen(webhook_req, timeout=10)
+                      print(f"Registered subscriber {chat_id} ({first_name})")
+                  except Exception as e:
+                      print(f"Failed to register {chat_id}: {e}")
+
+                  # Send confirmation (only once per chat_id per run)
+                  if chat_id not in confirmed:
+                      confirmed.add(chat_id)
+                      conf_text = ('✅ Вы подписались на уведомления!\n\n'
+                                   'Теперь каждый раз, когда кто-то оставит заявку на сайте, '
+                                   'я сразу пришлю вам сообщение.')
+                      conf_req = urllib.request.Request(
+                          f"https://api.telegram.org/bot{token}/sendMessage",
+                          data=json.dumps({'chat_id': chat_id, 'text': conf_text}).encode(),
+                          headers={'Content-Type': 'application/json'},
+                          method='POST'
+                      )
+                      try:
+                          urllib.request.urlopen(conf_req, timeout=10)
+                          print(f"Sent confirmation to {chat_id}")
+                      except Exception as e:
+                          print(f"Failed to send confirmation to {chat_id}: {e}")
+
+          # Update offset variable so next run doesn't re-process
+          if max_id > last_id:
+              print(f"Updating TELEGRAM_LAST_UPDATE_ID: {last_id} -> {max_id}")
+              var_data = json.dumps({'name': 'TELEGRAM_LAST_UPDATE_ID', 'value': str(max_id)}).encode()
+              var_req = urllib.request.Request(
+                  'https://api.github.com/repos/berllinn-lab/Vika/actions/variables/TELEGRAM_LAST_UPDATE_ID',
+                  data=var_data,
+                  headers={
+                      'Authorization': f'Bearer {gh_token}',
+                      'Content-Type': 'application/json',
+                  },
+                  method='PATCH'
+              )
+              try:
+                  urllib.request.urlopen(var_req, timeout=10)
+                  print("Updated offset variable")
+              except urllib.error.HTTPError as e:
+                  if e.code == 404:
+                      # Variable doesn't exist yet, create it
+                      create_req = urllib.request.Request(
+                          'https://api.github.com/repos/berllinn-lab/Vika/actions/variables',
+                          data=var_data,
+                          headers={
+                              'Authorization': f'Bearer {gh_token}',
+                              'Content-Type': 'application/json',
+                          },
+                          method='POST'
+                      )
+                      urllib.request.urlopen(create_req, timeout=10)
+                      print("Created offset variable")
+                  else:
+                      print(f"Failed to update offset: {e.code} {e.read()}")
+          EOF
