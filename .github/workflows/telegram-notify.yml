@@ -1,0 +1,46 @@
+name: Telegram Notify
+
+on:
+  workflow_dispatch:
+    inputs:
+      chat_ids:
+        description: 'JSON array of chat IDs'
+        required: true
+      message:
+        description: 'Message text (HTML)'
+        required: true
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Telegram notifications
+        env:
+          BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          CHAT_IDS: ${{ inputs.chat_ids }}
+          MESSAGE: ${{ inputs.message }}
+        run: |
+          python3 << 'EOF'
+          import os, json, urllib.request
+
+          token = os.environ['BOT_TOKEN']
+          chat_ids = json.loads(os.environ['CHAT_IDS'])
+          message = os.environ['MESSAGE']
+
+          for chat_id in chat_ids:
+              data = json.dumps({
+                  'chat_id': chat_id,
+                  'text': message,
+                  'parse_mode': 'HTML'
+              }).encode()
+              req = urllib.request.Request(
+                  f'https://api.telegram.org/bot{token}/sendMessage',
+                  data=data,
+                  headers={'Content-Type': 'application/json'}
+              )
+              try:
+                  urllib.request.urlopen(req)
+                  print(f'Sent to {chat_id}')
+              except Exception as e:
+                  print(f'Failed to send to {chat_id}: {e}')
+          EOF

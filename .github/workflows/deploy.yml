@@ -27,13 +27,14 @@ jobs:
           APIFY_TOKEN: ${{ secrets.APIFY_TOKEN }}
           IG_SYNC_SECRET: ${{ secrets.IG_SYNC_SECRET }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          GH_DISPATCH_TOKEN: ${{ secrets.GH_DISPATCH_TOKEN }}
         with:
           host: ${{ secrets.SSH_HOST }}
           port: ${{ secrets.SSH_PORT }}
           username: ${{ secrets.SSH_USER }}
           password: ${{ secrets.SSH_PASSWORD }}
           command_timeout: 20m
-          envs: GH_TOKEN,GH_REPO,HOST_PORT,SESSION_PASSWORD,ADMIN_LOGIN,ADMIN_PASSWORD_HASH,APIFY_TOKEN,IG_SYNC_SECRET,TELEGRAM_BOT_TOKEN
+          envs: GH_TOKEN,GH_REPO,HOST_PORT,SESSION_PASSWORD,ADMIN_LOGIN,ADMIN_PASSWORD_HASH,APIFY_TOKEN,IG_SYNC_SECRET,TELEGRAM_BOT_TOKEN,GH_DISPATCH_TOKEN
           script: |
             set -euo pipefail
             APP_DIR=/opt/quiet-dialogue
@@ -55,8 +56,8 @@ jobs:
             # $ в значениях экранируем как $$, иначе docker compose съест их при interpolation.
             ESC_HASH=$(printf '%s' "$ADMIN_PASSWORD_HASH" | sed 's/\$/$$/g')
             umask 077
-            printf 'HOST_PORT=%s\nSESSION_PASSWORD=%s\nADMIN_LOGIN=%s\nADMIN_PASSWORD_HASH=%s\nAPIFY_TOKEN=%s\nIG_SYNC_SECRET=%s\nIG_USERNAME=time_prenatal\nTELEGRAM_BOT_TOKEN=%s\n' \
-              "$HOST_PORT" "$SESSION_PASSWORD" "$ADMIN_LOGIN" "$ESC_HASH" "$APIFY_TOKEN" "$IG_SYNC_SECRET" "$TELEGRAM_BOT_TOKEN" > .env
+            printf 'HOST_PORT=%s\nSESSION_PASSWORD=%s\nADMIN_LOGIN=%s\nADMIN_PASSWORD_HASH=%s\nAPIFY_TOKEN=%s\nIG_SYNC_SECRET=%s\nIG_USERNAME=time_prenatal\nTELEGRAM_BOT_TOKEN=%s\nGH_DISPATCH_TOKEN=%s\n' \
+              "$HOST_PORT" "$SESSION_PASSWORD" "$ADMIN_LOGIN" "$ESC_HASH" "$APIFY_TOKEN" "$IG_SYNC_SECRET" "$TELEGRAM_BOT_TOKEN" "$GH_DISPATCH_TOKEN" > .env
 
             umask 022
 
