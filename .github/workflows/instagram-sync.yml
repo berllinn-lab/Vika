@@ -21,7 +21,15 @@ jobs:
           IG_SYNC_SECRET: ${{ secrets.IG_SYNC_SECRET }}
         run: |
           python3 << 'PYEOF'
-          import json, urllib.request, urllib.error, sys, os
+          import json, urllib.request, urllib.error, sys, os, socket
+
+          # Force IPv4: GitHub-hosted runners не имеют IPv6 outbound,
+          # а *.fna.fbcdn.net резолвится в AAAA → "Network is unreachable".
+          _orig_getaddrinfo = socket.getaddrinfo
+          def _ipv4_only(host, *args, **kwargs):
+              return _orig_getaddrinfo(host, *args, family=socket.AF_INET,
+                                       **{k: v for k, v in kwargs.items() if k != 'family'})
+          socket.getaddrinfo = _ipv4_only
 
           SERVER = "https://803820a5872d.vps.myjino.ru"
           SECRET = os.environ["IG_SYNC_SECRET"]
@@ -43,7 +51,7 @@ jobs:
               if not ig_id:
                   continue
 
-              local_path = display_url  # fallback: CDN url
+              local_path = ""  # пусто = не затирать existing photo_url на сервере
 
               if display_url:
                   try:
@@ -81,7 +89,7 @@ jobs:
 
                   except Exception as e:
                       print(f"FAIL {ig_id}: {e}", file=sys.stderr)
-                      local_path = display_url  # keep CDN url as fallback
+                      local_path = ""  # не затирать existing photo_url
 
               meta.append({
                   "id": ig_id,

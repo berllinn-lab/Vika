@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { upsertInstagramPost } from '@/lib/db';
+import { upsertInstagramPost, getDb } from '@/lib/db';
 
 export const dynamic = 'force-dynamic';
 
@@ -42,9 +42,19 @@ export async function POST(req) {
       if (!isNaN(parsed)) igTimestamp = parsed;
     }
 
+    // Защита от регрессии: если новый photo_url пустой (GHA не смог скачать),
+    // не затираем уже сохранённый локальный путь.
+    let photoUrl = post.photo_url || '';
+    if (!photoUrl) {
+      const existing = getDb()
+        .prepare('SELECT photo_url FROM instagram_posts WHERE id=?')
+        .get(post.id);
+      photoUrl = existing?.photo_url || '';
+    }
+
     upsertInstagramPost({
       id: post.id,
-      photo_url: post.photo_url || '',
+      photo_url: photoUrl,
       caption: post.caption || '',
       permalink: post.permalink || '',
       ig_timestamp: igTimestamp,
